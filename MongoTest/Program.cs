@@ -1,5 +1,6 @@
-﻿using MongoDB.Bson;
+﻿using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
+using MongoTest.Services;
 using System;
 
 namespace MongoTest
@@ -10,67 +11,33 @@ namespace MongoTest
 
         static void Main(string[] args)
         {
+            var serviceProvider = ConfigureServices();
+
             Console.WriteLine("Hello World!");
 
-            var dbClient = new MongoClient("mongodb://root:example@127.0.0.1:27017");
-
-            var dbList = dbClient.ListDatabases().ToList();
-
-            Console.WriteLine("The list of databases are :");
-            foreach (var item in dbList)
-            {
-                Console.WriteLine(item);
-            }
-
-            db = dbClient.GetDatabase("pilifs");
-
-            var collList = db.ListCollections().ToList();
-            if (collList.Count == 0)
-            {
-                InitDb();
-            }
-            InitDb();
-
-            Console.WriteLine("The list of collections are :");
-            foreach (var item in collList)
-            {
-                Console.WriteLine(item);
-            }
+            var srv = serviceProvider.GetService<UzivateleService>();
+            srv.EraseAndFill();
+            srv.ListSimpleByJmeno("Ladislav");
+            srv.ListKuraciNad20();
 
             Console.WriteLine("Finnish.");
             Console.ReadKey();
         }
 
-        static void InitDb()
+        private static ServiceProvider ConfigureServices()
         {
-            var uzivatele = db.GetCollection<Uzivatel>("uzivatele");
-            var id = ObjectId.GenerateNewId();
-
-            var item = new Uzivatel()
+            var collection = new ServiceCollection();
+            collection.AddSingleton<IMongoClient>(provider => new MongoClient("mongodb://root:example@127.0.0.1:27017"));
+            collection.AddSingleton<IMongoDatabase>(provider =>
             {
-                Id = 1,
-                Jmeno = "Ladislav",
-                Prijmeni = "Filip"
-            };
+                var client = provider.GetService<IMongoClient>();
+                db = client.GetDatabase("pilifs");
+                return db;
+            });
+            collection.AddTransient<UzivateleService>();
 
-            uzivatele.InsertOne(item);
+            var serviceProvider = collection.BuildServiceProvider();
+            return serviceProvider;
         }
-
-        static void VymazatUzivatele()
-        {
-            var uzivatele = db.GetCollection<Uzivatel>("uzivatele");
-            FilterDefinition<Uzivatel> filter = "{ Jmeno: \"Ladislav\" }";
-            uzivatele.DeleteMany(filter);
-        }
-
-    }
-
-    class Uzivatel
-    {
-        public int Id { get; set; }
-
-        public string Jmeno { get; set; }
-
-        public string Prijmeni { get; set; }
     }
 }
