@@ -17,8 +17,8 @@ namespace MongoTest
 
             var srv = serviceProvider.GetService<UzivateleService>();
             srv.EraseAndFill();
-            srv.ListSimpleByJmeno("Ladislav");
-            srv.ListKuraciNad20();
+            //srv.ListSimpleByJmeno("Ladislav");
+            //srv.ListKuraciNad20();
 
             Console.WriteLine("Finnish.");
             Console.ReadKey();

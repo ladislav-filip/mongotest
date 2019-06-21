@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using MongoTest.Models;
 using System;
+using System.Linq;
 
 namespace MongoTest.Services
 {
@@ -48,19 +49,20 @@ namespace MongoTest.Services
 
         private void FillKuraci()
         {
-            var data = new string[] { "Miloš,Zeman,40,Mars", "Vaclav,Klaus,5,Start", "Miloš,Forman,12,Mars", "Martin,Dejdar,22,Sparta" };
+            var znacky = new string[] { "Start", "Mars", "Sparta", "Marlboro", "ViceRoy" };
+            var rnd = new Random();
+            var data = DataJmena.GetJmena().Take(50);
             foreach (var d in data)
             {
-                var di = d.Split(',');
                 var item = new Uzivatel<IVlastnost>()
                 {
                     Id = ObjectId.GenerateNewId(),
-                    Jmeno = di[0],
-                    Prijmeni = di[1],
+                    Jmeno = d.Jmeno,
+                    Prijmeni = d.Prijmeni,
                     Data = new VlastnostKurak()
                     {
-                        PocetDenne = int.Parse(di[2]),
-                        OblibenaZnacka = di[3]
+                        PocetDenne = rnd.Next(100),
+                        OblibenaZnacka = znacky[rnd.Next(znacky.Length - 1)]
                     }
                 };
                 Collection.InsertOne(item);
@@ -69,18 +71,20 @@ namespace MongoTest.Services
 
         private void FillRidici()
         {
-            var data = new string[] { "Ladislav,Filip,A-B", "Petr,Kopec,C-D", "Jan,Duchacek,E", "Ladislav,Pohrobek,E" };
+            var rnd = new Random();
+            var skupiny = new string[] { "A", "B", "C", "D", "E" };
+            var data = DataJmena.GetJmena().Skip(50);
             foreach (var d in data)
             {
-                var di = d.Split(',');
                 var item = new Uzivatel<IVlastnost>()
                 {
                     Id = ObjectId.GenerateNewId(),
-                    Jmeno = di[0],
-                    Prijmeni = di[1],
+                    Jmeno = d.Jmeno,
+                    Prijmeni = d.Prijmeni,
                     Data = new VlastnostRidic()
                     {
-                        Skupiny = di[2].Split('-')
+                        Skupiny = new string[] { skupiny[rnd.Next(skupiny.Length - 1)], skupiny[rnd.Next(skupiny.Length - 1)] },
+                        RokVydani = rnd.Next(1970, 2019)
                     }
                 };
                 Collection.InsertOne(item);
