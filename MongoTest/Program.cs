@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
+using MongoTest.DAL;
 using MongoTest.Services;
 using System;
 
@@ -16,13 +17,13 @@ namespace MongoTest
             Console.WriteLine("Hello World!");
 
             var srv = serviceProvider.GetService<UzivateleService>();
-            //srv.EraseAndFill();
+            srv.EraseAndFill();
             //srv.ListSimpleByJmeno("Ladislav");
             //srv.ListKuraciNad20();
             //srv.PocetJmen();
             //srv.ProjekceAsync().Wait();
             //srv.ProjekceDve();
-            srv.UpdatePribor();
+            //srv.UpdatePribor();
 
             Console.WriteLine("Finnish.");
             Console.ReadKey();
@@ -39,6 +40,7 @@ namespace MongoTest
                 return db;
             });
             collection.AddTransient<UzivateleService>();
+            collection.AddTransient<ISequenceRepository, SequenceRepository>();
 
             var serviceProvider = collection.BuildServiceProvider();
             return serviceProvider;

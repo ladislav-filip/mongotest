@@ -4,7 +4,7 @@ namespace MongoTest.Models
 {
     public class UzivatelBase
     {
-        public ObjectId Id { get; set; }
+        public int Id { get; set; }
 
         public string Jmeno { get; set; }
 

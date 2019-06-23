@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
+using MongoTest.DAL;
 using MongoTest.Models;
 using System;
 using System.Linq;
@@ -8,8 +9,11 @@ namespace MongoTest.Services
 {
     public class UzivateleService : BaseService<Uzivatel<IVlastnost>>
     {
-        public UzivateleService(IMongoDatabase database) : base(database)
+        private readonly ISequenceRepository m_sequenceRepository;
+
+        public UzivateleService(IMongoDatabase database, ISequenceRepository sequenceRepository) : base(database)
         {
+            m_sequenceRepository = sequenceRepository;
         }
 
         public void Erase()
@@ -103,7 +107,7 @@ namespace MongoTest.Services
             {
                 var item = new Uzivatel<IVlastnost>()
                 {
-                    Id = ObjectId.GenerateNewId(),
+                    Id = m_sequenceRepository.GetSequenceValue(GetCollectionName()),
                     Jmeno = d.Jmeno,
                     Prijmeni = d.Prijmeni,
                     Obec = d.Obec,
@@ -127,7 +131,7 @@ namespace MongoTest.Services
             {
                 var item = new Uzivatel<IVlastnost>()
                 {
-                    Id = ObjectId.GenerateNewId(),
+                    Id = m_sequenceRepository.GetSequenceValue(GetCollectionName()),
                     Jmeno = d.Jmeno,
                     Prijmeni = d.Prijmeni,
                     Obec = d.Obec,
