@@ -47,6 +47,53 @@ namespace MongoTest.Services
             }
         }
 
+        public void PocetJmen()
+        {
+            var coll = _database.GetCollection<BsonDocument>(GetCollectionName());
+            var aggregate = coll.Aggregate().Group(new BsonDocument { { "_id", "$Jmeno" }, { "count", new BsonDocument("$sum", 1) } });
+
+            var results = aggregate.ToList();
+            foreach (var obj in results)
+            {
+                Console.WriteLine(obj.ToString());
+            }
+        }
+
+        public async System.Threading.Tasks.Task ProjekceAsync()
+        {
+            var coll = Collection;
+            var list = await coll.Find(p => p.Jmeno == "Petr").Project(p => new { CeleJmeno = $"{p.Prijmeni} {p.Jmeno}", Inicialy = p.Prijmeni.First().ToString() + "" + p.Jmeno.First().ToString() }).ToListAsync();
+            foreach(var d in list)
+            {
+                Console.WriteLine(d);
+            }
+        }
+
+        public void ProjekceDve()
+        {
+            FieldDefinition<BsonDocument> field = "Obec";
+            var projection = Builders<BsonDocument>.Projection.Include(field);
+            var list = _database.GetCollection<BsonDocument>(GetCollectionName()).Find(new BsonDocument("Jmeno", "Pavel")).Project(projection).ToList();
+            foreach (var d in list)
+            {
+                Console.WriteLine(d);
+            }
+        }
+
+        public void UpdatePribor()
+        {
+            var coll = _database.GetCollection<BsonDocument>(GetCollectionName());
+            FieldDefinition<BsonDocument> field = "Obec";
+            var projection = Builders<BsonDocument>.Projection.Include(field);
+            var list = coll.Find(new BsonDocument("Obec", "Příbor")).Project(projection).ToList();
+            foreach (var d in list)
+            {
+                Console.WriteLine(d["_id"]);
+                coll.FindOneAndUpdate(Builders<BsonDocument>.Filter.Eq("_id", d["_id"]),
+                    Builders<BsonDocument>.Update.Set("Jmeno", "aaaa"));
+            }
+        }
+
         private void FillKuraci()
         {
             var znacky = new string[] { "Start", "Mars", "Sparta", "Marlboro", "ViceRoy" };
@@ -59,6 +106,8 @@ namespace MongoTest.Services
                     Id = ObjectId.GenerateNewId(),
                     Jmeno = d.Jmeno,
                     Prijmeni = d.Prijmeni,
+                    Obec = d.Obec,
+                    TrvaleBydliste = d.TrvaleBydliste,
                     Data = new VlastnostKurak()
                     {
                         PocetDenne = rnd.Next(100),
@@ -81,6 +130,8 @@ namespace MongoTest.Services
                     Id = ObjectId.GenerateNewId(),
                     Jmeno = d.Jmeno,
                     Prijmeni = d.Prijmeni,
+                    Obec = d.Obec,
+                    TrvaleBydliste = d.TrvaleBydliste,
                     Data = new VlastnostRidic()
                     {
                         Skupiny = new string[] { skupiny[rnd.Next(skupiny.Length - 1)], skupiny[rnd.Next(skupiny.Length - 1)] },

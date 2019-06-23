@@ -16,9 +16,13 @@ namespace MongoTest
             Console.WriteLine("Hello World!");
 
             var srv = serviceProvider.GetService<UzivateleService>();
-            srv.EraseAndFill();
+            //srv.EraseAndFill();
             //srv.ListSimpleByJmeno("Ladislav");
             //srv.ListKuraciNad20();
+            //srv.PocetJmen();
+            //srv.ProjekceAsync().Wait();
+            //srv.ProjekceDve();
+            srv.UpdatePribor();
 
             Console.WriteLine("Finnish.");
             Console.ReadKey();

@@ -9,6 +9,10 @@ namespace MongoTest.Models
         public string Jmeno { get; set; }
 
         public string Prijmeni { get; set; }
+
+        public string Obec { get; set; }
+
+        public bool TrvaleBydliste { get; set; }
     }
 
     public class Uzivatel<TVlastnost> : UzivatelBase 

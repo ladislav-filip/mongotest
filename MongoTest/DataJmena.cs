@@ -208,8 +208,11 @@ Tereza Bazínková
 Markéta Míšková
 Daniela Zborovská";
 
+        static string[] Obce = new string[] { "Příbor", "Ostrava", "Praha", "Brno", "Olomouc", "Louny", "Krmelín" };
+
         public static IEnumerable<UzivatelBase> GetJmena()
         {
+            var rnd = new Random();
             var result = new List<UzivatelBase>();
             foreach(var line in Raw.Split(Environment.NewLine))
             {
@@ -217,7 +220,9 @@ Daniela Zborovská";
                 var uziv = new UzivatelBase()
                 {
                     Jmeno = tmp[0],
-                    Prijmeni = tmp[1]
+                    Prijmeni = tmp[1],
+                    Obec = Obce[rnd.Next(Obce.Length - 1)],
+                    TrvaleBydliste = rnd.Next(5) > 2
                 };
                 result.Add(uziv);
             }
