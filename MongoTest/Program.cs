@@ -32,7 +32,8 @@ namespace MongoTest
         private static ServiceProvider ConfigureServices()
         {
             var collection = new ServiceCollection();
-            collection.AddSingleton<IMongoClient>(provider => new MongoClient("mongodb://root:example@127.0.0.1:27017"));
+
+            collection.AddSingleton<IMongoClient>(provider => new MongoClient("mongodb://root:lok@127.0.0.1:27017"));
             collection.AddSingleton<IMongoDatabase>(provider =>
             {
                 var client = provider.GetService<IMongoClient>();
