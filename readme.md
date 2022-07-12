@@ -16,3 +16,6 @@ https://mongodb.github.io/mongo-csharp-driver/
 ### Články o Mongo DB
 Pěkný 3-dílný článek:  
 http://www.cloudsvet.cz/?p=249
+
+## Import
+```mongoimport Citi_Bike_trip_data.csv -d pilifs -c citibike --type csv --headerline```

@@ -1,6 +1,4 @@
-﻿using MongoDB.Driver;
-
-namespace MongoTest.Services
+﻿namespace MongoTest.Services
 {
     public abstract class BaseService<TCollection>
     {

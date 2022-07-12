@@ -1,7 +1,4 @@
-﻿using MongoDB.Driver;
-using MongoTest.Models;
-
-namespace MongoTest.DAL
+﻿namespace MongoTest.DAL
 {
     /// <summary>
     /// https://www.tutorialspoint.com/mongodb/mongodb_autoincrement_sequence.htm

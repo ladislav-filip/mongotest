@@ -1,8 +1,4 @@
 ﻿using MongoDB.Bson;
-using MongoDB.Driver;
-using MongoTest.DAL;
-using MongoTest.Models;
-using System;
 using System.Linq;
 
 namespace MongoTest.Services
@@ -10,14 +6,17 @@ namespace MongoTest.Services
     public class UzivateleService : BaseService<Uzivatel<IVlastnost>>
     {
         private readonly ISequenceRepository m_sequenceRepository;
+        private readonly ILogger<UzivateleService> _logger;
 
-        public UzivateleService(IMongoDatabase database, ISequenceRepository sequenceRepository) : base(database)
+        public UzivateleService(IMongoDatabase database, ISequenceRepository sequenceRepository, ILogger<UzivateleService> logger) : base(database)
         {
             m_sequenceRepository = sequenceRepository;
+            _logger = logger;
         }
 
         public void Erase()
         {
+            _logger.LogInformation("Erase database...");
             Collection.DeleteMany(Builders<Uzivatel<IVlastnost>>.Filter.Where(p => !string.IsNullOrEmpty(p.Jmeno)));
         }
 
@@ -36,7 +35,7 @@ namespace MongoTest.Services
 
             foreach(var d in data)
             {
-                Console.WriteLine($"{d.Jmeno} {d.Prijmeni}");
+                _logger.LogInformation($"{d.Jmeno} {d.Prijmeni}");
             }
         }
 
@@ -47,7 +46,21 @@ namespace MongoTest.Services
 
             foreach (var d in data)
             {
-                Console.WriteLine($"{d.Jmeno} {d.Prijmeni}, počet = {d.Data.PocetDenne}");
+                _logger.LogInformation($"{d.Jmeno} {d.Prijmeni}, počet = {d.Data.PocetDenne}");
+            }
+        }
+        
+        public void ListRidiciAB()
+        {
+            var collectionMy = _database.GetCollection<Uzivatel<VlastnostRidic>>(GetCollectionName());
+
+            var filter = Builders<Uzivatel<VlastnostRidic>>.Filter;
+            var data = collectionMy.Find(filter.AnyIn(f => f.Data.Skupiny, new[] { "A", "C" })).ToList();
+            
+            foreach (var d in data)
+            {
+                var skupiny = string.Join(",", d.Data.Skupiny);
+                _logger.LogInformation($"{d.Jmeno} {d.Prijmeni}, počet = {skupiny}");
             }
         }
 
@@ -59,7 +72,7 @@ namespace MongoTest.Services
             var results = aggregate.ToList();
             foreach (var obj in results)
             {
-                Console.WriteLine(obj.ToString());
+                _logger.LogInformation(obj.ToString());
             }
         }
 
@@ -69,7 +82,7 @@ namespace MongoTest.Services
             var list = await coll.Find(p => p.Jmeno == "Petr").Project(p => new { CeleJmeno = $"{p.Prijmeni} {p.Jmeno}", Inicialy = p.Prijmeni.First().ToString() + "" + p.Jmeno.First().ToString() }).ToListAsync();
             foreach(var d in list)
             {
-                Console.WriteLine(d);
+                _logger.LogInformation(ObjectDumper.Dump(d));
             }
         }
 
@@ -80,7 +93,7 @@ namespace MongoTest.Services
             var list = _database.GetCollection<BsonDocument>(GetCollectionName()).Find(new BsonDocument("Jmeno", "Pavel")).Project(projection).ToList();
             foreach (var d in list)
             {
-                Console.WriteLine(d);
+                _logger.LogInformation(ObjectDumper.Dump(d));
             }
         }
 
@@ -92,7 +105,7 @@ namespace MongoTest.Services
             var list = coll.Find(new BsonDocument("Obec", "Příbor")).Project(projection).ToList();
             foreach (var d in list)
             {
-                Console.WriteLine(d["_id"]);
+                _logger.LogInformation(ObjectDumper.Dump(d));
                 coll.FindOneAndUpdate(Builders<BsonDocument>.Filter.Eq("_id", d["_id"]),
                     Builders<BsonDocument>.Update.Set("Jmeno", "aaaa"));
             }

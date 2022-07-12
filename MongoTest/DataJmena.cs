@@ -1,9 +1,4 @@
-﻿using MongoTest.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MongoTest
+﻿namespace MongoTest
 {
     internal static class DataJmena
     {

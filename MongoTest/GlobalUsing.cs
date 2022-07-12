@@ -1,0 +1,9 @@
+﻿global using Microsoft.Extensions.DependencyInjection;
+global using MongoTest.Services;
+global using System;
+global using MongoDB.Bson.Serialization;
+global using MongoTest.Models;
+global using Microsoft.Extensions.Logging;
+global using MongoDB.Driver;
+global using MongoTest.DAL;
+global using System.Collections.Generic;
