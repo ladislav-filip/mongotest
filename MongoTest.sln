@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 	ProjectSection(SolutionItems) = preProject
 		readme.md = readme.md
 		Data\Citi_Bike_trip_data.zip = Data\Citi_Bike_trip_data.zip
+		MongoDb\CreateCollections.mongodb = MongoDb\CreateCollections.mongodb
+		MongoDb\lookup.mongodb = MongoDb\lookup.mongodb
 	EndProjectSection
 EndProject
 Global

@@ -1,0 +1,22 @@
+﻿db.createCollection("person")
+
+db.createCollection("address")
+
+db.person.insertOne({
+    name: "Petr",
+    surname: "Sovak",
+    addresses: ["a-1", "a-2" ]
+})
+
+db.address.insertMany([
+    { 
+        _id: "a-1",
+        city: "Ostrava",
+        street: "Varenska"
+    },
+    {
+        _id: "a-2",
+        city: "Praha",
+        street: "Rudna"
+    }
+])

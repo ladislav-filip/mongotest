@@ -1,0 +1,25 @@
+﻿db.person.aggregate([
+    {
+        $unwind: "$addresses" 
+    },
+    {
+        $lookup: {
+            from: "address",
+            localField: "addresses",
+            foreignField: "_id",
+            as: "addr"
+        }
+    },
+    {
+        $unwind: "$addr"
+    },
+    {
+        $project: {
+            name: 1,
+            surname: 1,
+            city: "$addr.city",
+            street: "$addr.street"
+        }
+    }
+    
+])
